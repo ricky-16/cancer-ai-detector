@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Análisis | IA</title>
+
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#e6edf5;
+
+      --blue:#0f4c81;
+      --blue2:#0b3a63;
+      --teal:#28c3ad;
+
+      --shadow:0 14px 38px rgba(15, 23, 42, .08);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    /* NAV */
+    .nav{
+      position:sticky; top:0;
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      box-shadow: 0 6px 20px rgba(15,23,42,.04);
+      z-index:5;
+    }
+    .nav-inner{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width: 260px;
+    }
+    .brand img{
+      width:46px; height:46px;
+      border-radius:14px;
+      object-fit:cover;
+      border:1px solid #e2e8f0;
+      background:#fff;
+    }
+    .brand .t1{
+      margin:0;
+      font-weight:900;
+      color:#0b3a63;
+      font-size:18px;
+      line-height:1.05;
+    }
+    .brand .t2{
+      margin:2px 0 0 0;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .nav-right{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .nav-right b{color:var(--text)}
+    .btn-ghost{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      border:1px solid var(--line);
+      background:#f8fafc;
+      color:#0b3a63;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .btn-ghost:hover{background:#eef2f7}
+
+    /* PAGE */
+    .wrap{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 34px 20px 70px;
+    }
+    h1{
+      margin: 0 0 6px 0;
+      font-size: 34px;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin: 0 0 22px 0;
+      color:var(--muted);
+      font-size:16px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items:start;
+      margin-top: 22px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .card-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom: 16px;
+      font-weight:900;
+      font-size:20px;
+    }
+    .icon{
+      width:28px; height:28px;
+      display:grid; place-items:center;
+      border-radius:10px;
+      background:#ecfeff;
+      border:1px solid #c5f6f3;
+      color:#0ea5a4;
+    }
+
+    .actions{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      margin-bottom: 16px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      border:none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn-primary{background: var(--blue); color:#fff;}
+    .btn-primary:hover{background: var(--blue2);}
+    .btn-teal{background: #7fd9cf; color:#063b3a;}
+    .btn-teal:hover{filter:brightness(.95)}
+    .btn-light{
+      background:#f2f5f9;
+      border:1px solid var(--line);
+      color:#64748b;
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      filter:saturate(.6);
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#eef3f8;
+      min-height: 280px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      position:relative;
+    }
+    .panel .hint{
+      color:#607088;
+      font-weight:700;
+    }
+    #webcam-container{
+      width:100%;
+      display:grid;
+      place-items:center;
+      padding:18px;
+    }
+    #webcam-container canvas{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.8);
+      box-shadow: 0 10px 24px rgba(15,23,42,.12);
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* UPLOAD */
+    .upload-top{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .file-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      font-weight:900;
+      cursor:pointer;
+      color:#0b3a63;
+    }
+    .file-btn:hover{background:#eef2f7}
+    input[type="file"]{display:none}
+
+    .drop{
+      border:1px dashed #cbd5e1;
+      border-radius: 16px;
+      background:#eef3f8;
+      min-height: 280px;
+      display:grid;
+      place-items:center;
+      padding: 22px;
+      text-align:center;
+      color:#607088;
+      font-weight:700;
+      gap:10px;
+    }
+    .drop svg{opacity:.55}
+    .preview{
+      margin-top: 14px;
+      display:none;
+    }
+    .preview img{
+      max-width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 24px rgba(15,23,42,.10);
+    }
+
+    @media(max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <img src="logo.png" alt="Logo">
+        <div>
+          <div class="t1">Christus Muguerza</div>
+          <div class="t2">Análisis con IA</div>
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <div>Bienvenido, <b id="who">—</b></div>
+        <button class="btn-ghost" id="btnLogout" type="button">
+          <!-- icon -->
+          <span aria-hidden="true">⟶</span>
+          Salir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE -->
+  <div class="wrap">
+    <h1>Analizar imagen con IA</h1>
+    <p class="sub">Selecciona una opción para cargar la imagen y obtener el diagnóstico del modelo.</p>
+
+    <div class="grid">
+
+      <!-- CAMARA -->
+      <div class="card">
+        <div class="card-head">
+          <div class="icon" aria-hidden="true">📷</div>
+          Cámara en vivo
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btnOn" type="button" onclick="startCam()">
+            📸 Prender
+          </button>
+          <button class="btn btn-teal" id="btnAnalyzeCam" type="button" onclick="analyzeFromCam()" disabled>
+            🔍 Analizar
+          </button>
+          <button class="btn btn-light" id="btnOff" type="button" onclick="stopCam()" disabled>
+            🚫 Apagar
+          </button>
+        </div>
+
+        <div class="panel" id="camPanel">
+          <div id="webcam-container">
+            <div class="hint">La cámara está apagada</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ARCHIVO -->
+      <div class="card">
+        <div class="card-head">
+          <div class="icon" aria-hidden="true">⬆️</div>
+          Subir archivo
+        </div>
+
+        <div class="upload-top">
+          <label class="file-btn" for="fileInput">
+            ⬆️ Seleccionar imagen
+          </label>
+          <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" />
+          <button class="btn btn-teal" id="btnAnalyzeFile" type="button" onclick="analyzeFromFile()" disabled>
+            🔍 Analizar
+          </button>
+          <button class="btn btn-light" id="btnClearFile" type="button" onclick="clearFile()" disabled>
+            ✖ Quitar
+          </button>
+        </div>
+
+        <div class="drop" id="dropZone">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 16V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20 16v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div>Arrastra o selecciona una imagen</div>
+          <div style="font-weight:600;font-size:13px;opacity:.85">Formatos: JPG, PNG, WebP</div>
+
+          <div class="preview" id="previewWrap">
+            <img id="preview" alt="Previsualización">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- libs -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+  <script>
+    // ✅ Live Server: carpeta del modelo al lado de este HTML
+    // Tu carpeta se llama "Cancer"
+    const MODEL_URL = "./Cancer/";
+
+    let model = null;
+    let webcam = null;
+    let camRunning = false;
+
+    const who = document.getElementById("who");
+    const btnLogout = document.getElementById("btnLogout");
+
+    const elWebcam = document.getElementById("webcam-container");
+    const camPanel = document.getElementById("camPanel");
+
+    const fileInput = document.getElementById("fileInput");
+    const dropZone = document.getElementById("dropZone");
+    const previewWrap = document.getElementById("previewWrap");
+    const preview = document.getElementById("preview");
+
+    const btnOn = document.getElementById("btnOn");
+    const btnOff = document.getElementById("btnOff");
+    const btnAnalyzeCam = document.getElementById("btnAnalyzeCam");
+    const btnAnalyzeFile = document.getElementById("btnAnalyzeFile");
+    const btnClearFile = document.getElementById("btnClearFile");
+
+    // ------- sesión simple -------
+    function requireLogin(){
+      const u = localStorage.getItem("loggedUser");
+      if(!u){
+        window.location.href = "login.html";
+        return;
+      }
+      who.textContent = u;
+    }
+    requireLogin();
+
+    btnLogout.addEventListener("click", () => {
+      try{ stopCam(); } catch {}
+      localStorage.removeItem("loggedUser");
+      window.location.href = "login.html";
+    });
+
+    // ------- modelo -------
+    async function loadModel(){
+      if(model) return;
+      model = await tmImage.load(MODEL_URL + "model.json", MODEL_URL + "metadata.json");
+    }
+
+    // ------- CAMARA -------
+    async function startCam(){
+      try{
+        await loadModel();
+        webcam = new tmImage.Webcam(300, 220, true);
+        await webcam.setup();
+        await webcam.play();
+
+        camRunning = true;
+        requestAnimationFrame(loop);
+
+        elWebcam.innerHTML = "";
+        elWebcam.appendChild(webcam.canvas);
+
+        btnAnalyzeCam.disabled = false;
+        btnOff.disabled = false;
+        btnOn.disabled = true;
+      }catch(e){
+        console.error(e);
+        alert("Error cámara/modelo: " + (e?.message || e));
+      }
+    }
+
+    function loop(){
+      if(!camRunning) return;
+      webcam.update();
+      requestAnimationFrame(loop);
+    }
+
+    function stopCam(){
+      camRunning = false;
+      try{ webcam?.stop(); }catch{}
+      elWebcam.innerHTML = '<div class="hint">La cámara está apagada</div>';
+      btnAnalyzeCam.disabled = true;
+      btnOff.disabled = true;
+      btnOn.disabled = false;
+    }
+
+    async function analyzeFromCam(){
+      if(!model || !webcam) return;
+      const prediction = await model.predict(webcam.canvas);
+      saveAndGo(prediction);
+    }
+
+    // ------- ARCHIVO (selector + drag&drop) -------
+    fileInput.addEventListener("change", () => handleFile(fileInput.files?.[0]));
+
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = "#8bbad0";
+    });
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.style.borderColor = "#cbd5e1";
+    });
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = "#cbd5e1";
+      const f = e.dataTransfer.files?.[0];
+      if(!f) return;
+      fileInput.files = e.dataTransfer.files; // para mantener consistencia
+      handleFile(f);
+    });
+
+    function handleFile(f){
+      if(!f){
+        btnAnalyzeFile.disabled = true;
+        btnClearFile.disabled = true;
+        previewWrap.style.display = "none";
+        preview.src = "";
+        return;
+      }
+      preview.src = URL.createObjectURL(f);
+      preview.onload = () => {
+        previewWrap.style.display = "block";
+      };
+      btnAnalyzeFile.disabled = false;
+      btnClearFile.disabled = false;
+    }
+
+    function clearFile(){
+      fileInput.value = "";
+      preview.src = "";
+      previewWrap.style.display = "none";
+      btnAnalyzeFile.disabled = true;
+      btnClearFile.disabled = true;
+    }
+
+    async function analyzeFromFile(){
+      try{
+        const f = fileInput.files?.[0];
+        if(!f) return;
+
+        await loadModel();
+
+        // asegúrate que el preview ya cargó
+        await new Promise((res, rej) => {
+          if(preview.complete && preview.naturalWidth) return res();
+          preview.onload = () => res();
+          preview.onerror = () => rej(new Error("No se pudo cargar la imagen"));
+        });
+
+        const prediction = await model.predict(preview);
+        saveAndGo(prediction);
+
+      }catch(e){
+        console.error(e);
+        alert("Error al analizar archivo: " + (e?.message || e));
+      }
+    }
+
+    // ------- guardar + ir a result.html -------
+    function saveAndGo(prediction){
+      const sorted = [...prediction].sort((a,b)=>b.probability - a.probability);
+      const best = sorted[0];
+
+      localStorage.setItem("result_data", JSON.stringify({
+        label: best.className,
+        confidence: best.probability,
+        all: prediction
+      }));
+
+      window.location.href = "result.html";
+    }
+  </script>
+</body>
+</html>
